@@ -9,11 +9,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/register")
@@ -42,6 +41,25 @@ public class UserController {
             @Valid @RequestBody CreateUserDTO user
     ) {
         userService.userRegister(user);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @Operation(
+            summary = "Create new users through the csv file and send it to other services",
+            description = "Endpoint responsible for adding a new users",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Created",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
+    )
+    @PostMapping(path = "/user/csv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> insertUserWithCsv(
+            @RequestParam("csv") MultipartFile csv
+    ) {
+        userService.userRegisterByFile(csv);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
