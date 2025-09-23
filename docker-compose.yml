@@ -1,36 +1,34 @@
 services:
   pg:
-    container_name: 'POSTGRESS'
-    image: 'postgres:latest'
+    container_name: 'POSTGRES'
+    image: 'postgres:11'
     restart: 'always'
+    ports:
+      - "5432:5432"
     networks:
       - my-networks
     environment:
       POSTGRES_DB: 'registerIf'
       POSTGRES_USER: 'user_api'
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
-#  api:
-#    container_name: 'API'
-#    build: .
-#    restart:
-#      on-failure:3
-#    networks:
-#      - my-networks
-#    environment:
-#      SPRING_DATASOURCE_URL: 'jdbc:postgresql://db:5432/pontoIf'
-#      SPRING_DATASOURCE_USERNAME: 'user_api'
-#      SPRING_DATASOURCE_PASSWORD: ${SPRING.DATASOURCE.PASSWORD}
-#      ADDRESS_REDIS: 'redis://redis:6379'
-#    ports:
-#      - '8080:8080'
-#    depends_on:
-#      - redis
-#      - rabbit
-#      - pg
+  api:
+    container_name: 'API'
+    build: .
+    networks:
+      - my-networks
+    environment:
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://pg:5432/registerIf'
+      SPRING_DATASOURCE_USERNAME: 'user_api'
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      ADDRESS_REDIS: 'redis://redis:6379'
+    ports:
+      - '8080:8080'
+    depends_on:
+      - redis
+      - rabbit
+      - pg
   redis:
     image: redis:7
     container_name: 'REDIS'
