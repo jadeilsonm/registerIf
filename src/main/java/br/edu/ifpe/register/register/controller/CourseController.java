@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import java.util.UUID;
+import java.util.List;
 
 @RestController
 @RequestMapping("/course")
@@ -34,11 +38,95 @@ public class CourseController {
                             description = "Created",
                             content = @Content(schema = @Schema(hidden = true))
                     )
+                    @ApiResponse(
+                        responseCode = "400",
+                        description = "Bad Request",
+                        content = @Content(schema = @Schema(hidden = true))
+                    )
             }
     )
     @PostMapping("")
     public ResponseEntity<Void> insertCourse(@Valid @RequestBody CourseDTO course) {
         this.courseService.insertCourse(course);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).build(); 
+    }
+    @Operation(
+            summary = "Get a course by its id",
+            description = "Endpoint responsible for getting a course by its id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Ok",
+                            content = @Content(schema = @Schema(implementation = CourseDTO.class, type = "application/json"))
+                    )
+                    @ApiResponse(
+                        responseCode = "404",
+                        description = "Not Found",
+                        content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
+    )
+    @Operation(
+            summary = "Get all courses",
+            description = "Endpoint responsible for getting all courses",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Ok",
+                            content = @Content(schema = @Schema(implementation = CourseDTO.class, type = "application/json"))
+                    )
+            }
+    )
+    @GetMapping("")
+    public ResponseEntity<List<CourseDTO>> getAllCourses() {
+        final var courses = this.courseService.getAllCourses();
+        return ResponseEntity.ok(courses);
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<CourseDTO> getCourseById(@PathVariable final UUID id) {
+        final var course = this.courseService.getCourseById(id);
+        return ResponseEntity.ok(course);
+    }
+    @Operation(
+            summary = "Updates a course by its id",
+            description = "Endpoint responsible for updating a course by its id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Ok",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+                    @ApiResponse(
+                        responseCode = "404",
+                        description = "Not Found",
+                        content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
+    )
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateCourse(@PathVariable final UUID id, @Valid @RequestBody CourseDTO course) {
+        this.courseService.updateCourse(id, course);
+        return ResponseEntity.noContent().build();
+    }
+    @Operation(
+            summary = "Deletes a course by its id",
+            description = "Endpoint responsible for deleting a course by its id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "No Content",
+                            content = @Content(schema = @Schema(hidden = true))
+                    )
+                    @ApiResponse(
+                        responseCode = "404",
+                        description = "Not Found",
+                        content = @Content(schema = @Schema(hidden = true))
+                    )
+            }
+    )
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCourse(@PathVariable final UUID id) {
+        this.courseService.deleteCourse(id);
+        return ResponseEntity.noContent().build();
     }
 }

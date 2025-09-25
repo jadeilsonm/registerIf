@@ -36,9 +36,25 @@ public class UserService {
 
     public void userRegister(final CreateUserDTO user) {
         final User newUser = userMapper.toEntity(user);
-        this.processingUser(newUser);
+        this.processingUser(newUser)
     }
-
+    public List<CreateUserDTO> getAllUsers(){
+        return this.userRepository.findAll().stream().map(userMapper::toDto).collect(Collectors.toList());
+    }
+    public CreateUserDTO getUserById(final String id) {
+        return this.userRepository.findById(id).orElseThrow( () -> new NoSuchElementException("User not found with ID: " + id));
+    }
+    public void updateUser(final String id, final CreateUserDTO user) {
+        final var existingUser = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User not found with ID: " + id));
+        userMapper.updateEntity(user, existingUser);
+        this.processingUser(existingUser);
+    }
+    public void deleteUser(final String id) {
+        if (!userRepository.existsById(id)) {
+            throw new NoSuchElementException("User not found with ID: " + id);
+        }
+        userRepository.deleteById(id);
+    }
     public void userRegisterByFile(final MultipartFile file) {
         try (Reader reader = new InputStreamReader(file.getInputStream())) {
             CsvToBean<UserCsvDTO> csvToBean = new CsvToBeanBuilder<UserCsvDTO>(reader)

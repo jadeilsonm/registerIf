@@ -12,5 +12,10 @@ public interface DisciplineMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "course", ignore = true)
     Discipline toEntity(DisciplineDTO disciplineDTO);
+    DisciplineDTO toDto(Discipline discipline);
+    
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "course", ignore = true)
+    void updateEntity(DisciplineDTO disciplineDTO, @org.mapstruct.MappingTarget Discipline discipline);
 
 }

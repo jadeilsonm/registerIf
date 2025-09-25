@@ -10,6 +10,10 @@ import org.mapstruct.Mapping;
 public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     User toEntity(CreateUserDTO dto);
+    CreateUserDTO toDto(User user);
+    
+    @Mapping(target = "id", ignore = true)
+    void updateEntity(CreateUserDTO dto, @MappingTarget User user);
 
     @Mapping(target = "id", ignore = true)
     User ToEntityByUserCsvDTO(UserCsvDTO dto);

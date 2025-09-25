@@ -10,7 +10,9 @@ import java.util.UUID;
 @Getter
 @Setter
 public class DisciplineDTO {
-    @NotBlank
+    @Null
+    private UUID id;
+    @NotNull
     private UUID courseId;
     @NotBlank
     @Size(min = 1, max = 100)
