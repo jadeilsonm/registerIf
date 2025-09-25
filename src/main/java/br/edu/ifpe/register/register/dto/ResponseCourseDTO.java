@@ -6,10 +6,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import java.util.UUID;
 
 @Getter
 @Setter
-public class CourseDTO {
+public class ResponseCourseDTO {
+    @Null
+    private UUID id;
     @NotBlank(message = "name is required")
     @Size(min = 3, max = 150, message = "The name must be between 3 and 150 characters long.")
     private String name;

@@ -9,7 +9,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateUserDTO {
+public class ResponseCreateUserDTO {
+    @Null
+    private java.util.UUID id;
     @Schema(description = "Name is required", example = "João de deus")
     @NotBlank(message = "name is required")
     @Size(min = 3, max = 150, message = "The name must be between 3 and 150 characters long.")
