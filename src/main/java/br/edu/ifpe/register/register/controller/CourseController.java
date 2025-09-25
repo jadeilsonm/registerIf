@@ -10,10 +10,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/course")
@@ -40,5 +41,31 @@ public class CourseController {
     public ResponseEntity<Void> insertCourse(@Valid @RequestBody CourseDTO course) {
         this.courseService.insertCourse(course);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<CourseDTO>> getAllCourses(){
+        List<CourseDTO> courses = this.courseService.getAllCourses();
+        return ResponseEntity.ok(courses);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CourseDTO> getCourseById(@PathVariable UUID id) {
+        Optional<CourseDTO> course = courseService.getCourseById(id);
+        return course.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CourseDTO> updateCourse(@PathVariable UUID id, @Valid @RequestBody CourseDTO courseDTO){
+        Optional<CourseDTO> updatedCourse = courseService.updateCourse(id, courseDTO);
+        return updatedCourse.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCourse(@PathVariable UUID id) {
+        boolean deleted = courseService.deleteCourse(id);
+        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
     }
 }
