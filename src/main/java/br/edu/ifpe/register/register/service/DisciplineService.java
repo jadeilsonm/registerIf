@@ -1,12 +1,16 @@
 package br.edu.ifpe.register.register.service;
 
 import br.edu.ifpe.register.register.dto.DisciplineDTO;
+import br.edu.ifpe.register.register.dto.ResponseDisciplineDTO;
 import br.edu.ifpe.register.register.exceptions.NotFoundException;
 import br.edu.ifpe.register.register.mapper.DisciplineMapper;
 import br.edu.ifpe.register.register.repository.CourseRepository;
 import br.edu.ifpe.register.register.repository.DisciplineRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class DisciplineService {
@@ -32,11 +36,11 @@ public class DisciplineService {
 
         disciplineRepository.save(newDiscipline);
     }
-    public List<DisciplineDTO> getAllDisciplines(){
-        return this.disciplineRepository.findAll().stream().map(disciplineMapper::toDto).collect(Collectors.toList());
+    public List<ResponseDisciplineDTO> getAllDisciplines(){
+        return this.disciplineRepository.findAll().stream().map(disciplineMapper::toResponseDisciplineDTO).collect(Collectors.toList());
     }
-    public DisciplineDTO getDisciplineById(final UUID id) {
-        return disciplineMapper.toDto(this.disciplineRepository.findById(id).orElseThrow());
+    public ResponseDisciplineDTO getDisciplineById(final UUID id) {
+        return disciplineMapper.toResponseDisciplineDTO(this.disciplineRepository.findById(id).orElseThrow());
     }
     public void updateDiscipline(final UUID id, final DisciplineDTO discipline) {
         final var existingDiscipline = disciplineRepository.findById(id).orElseThrow();

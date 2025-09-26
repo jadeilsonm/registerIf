@@ -1,6 +1,7 @@
 package br.edu.ifpe.register.register.service;
 
 import br.edu.ifpe.register.register.dto.CreateUserDTO;
+import br.edu.ifpe.register.register.dto.ResponseCreateUserDTO;
 import br.edu.ifpe.register.register.dto.UserCsvDTO;
 import br.edu.ifpe.register.register.entity.User;
 import br.edu.ifpe.register.register.mapper.UserMapper;
@@ -16,8 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -36,22 +40,22 @@ public class UserService {
 
     public void userRegister(final CreateUserDTO user) {
         final User newUser = userMapper.toEntity(user);
-        this.processingUser(newUser)
+        this.processingUser(newUser);
     }
-    public List<CreateUserDTO> getAllUsers(){
-        return this.userRepository.findAll().stream().map(userMapper::toDto).collect(Collectors.toList());
+    public List<ResponseCreateUserDTO> getAllUsers(){
+        return this.userRepository.findAll().stream().map(userMapper::toResponseCreateUserDTO).collect(Collectors.toList());
     }
-    public CreateUserDTO getUserById(final String id) {
-        return this.userRepository.findById(id).orElseThrow( () -> new NoSuchElementException("User not found with ID: " + id));
+    public ResponseCreateUserDTO getUserById(final UUID id) {
+        return this.userRepository.findById(id).map(userMapper::toResponseCreateUserDTO).orElseThrow();
     }
-    public void updateUser(final String id, final CreateUserDTO user) {
-        final var existingUser = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User not found with ID: " + id));
+    public void updateUser(final UUID id, final CreateUserDTO user) {
+        final var existingUser = userRepository.findById(id).orElseThrow();
         userMapper.updateEntity(user, existingUser);
         this.processingUser(existingUser);
     }
-    public void deleteUser(final String id) {
+    public void deleteUser(final UUID id) {
         if (!userRepository.existsById(id)) {
-            throw new NoSuchElementException("User not found with ID: " + id);
+            throw new RuntimeException("User not found id: " + id);
         }
         userRepository.deleteById(id);
     }

@@ -1,10 +1,14 @@
 package br.edu.ifpe.register.register.service;
 
 import br.edu.ifpe.register.register.dto.CourseDTO;
+import br.edu.ifpe.register.register.dto.ResponseCourseDTO;
 import br.edu.ifpe.register.register.mapper.CourseMapper;
 import br.edu.ifpe.register.register.repository.CourseRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseService {
@@ -21,11 +25,11 @@ public class CourseService {
     public void insertCourse(final CourseDTO course) {
         this.courseRepository.save(courseMapper.toEntity(course));
     }
-    public CourseDTO getCourseById(final UUID id) {
-        return courseMapper.toDto(this.courseRepository.findById(id).orElseThrow());
+    public ResponseCourseDTO getCourseById(final UUID id) {
+        return courseMapper.toResponseCourseDTO(this.courseRepository.findById(id).orElseThrow());
     }
-    public List<CourseDTO> getAllCourses(){
-        return this.courseRepository.findAll().stream().map(courseMapper::toDto).collect(Collectors.toList());
+    public List<ResponseCourseDTO> getAllCourses(){
+        return this.courseRepository.findAll().stream().map(courseMapper::toResponseCourseDTO).collect(Collectors.toList());
     }
     public void updateCourse(final UUID id, final CourseDTO course) {
         final var existingCourse = courseRepository.findById(id).orElseThrow();

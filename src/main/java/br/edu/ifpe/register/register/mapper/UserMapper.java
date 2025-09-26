@@ -1,20 +1,23 @@
 package br.edu.ifpe.register.register.mapper;
 
 import br.edu.ifpe.register.register.dto.CreateUserDTO;
+import br.edu.ifpe.register.register.dto.ResponseCreateUserDTO;
 import br.edu.ifpe.register.register.dto.UserCsvDTO;
 import br.edu.ifpe.register.register.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     @Mapping(target = "id", ignore = true)
-    User toEntity(CreateUserDTO dto);
-    CreateUserDTO toDto(User user);
-    
-    @Mapping(target = "id", ignore = true)
-    void updateEntity(CreateUserDTO dto, @MappingTarget User user);
+    User toEntity(CreateUserDTO createUserDTO);
+
+    ResponseCreateUserDTO toResponseCreateUserDTO(User user);
 
     @Mapping(target = "id", ignore = true)
-    User ToEntityByUserCsvDTO(UserCsvDTO dto);
+    void updateEntity(CreateUserDTO createUserDTO, @org.mapstruct.MappingTarget User user);
+
+    @Mapping(target = "id", ignore = true)
+    User ToEntityByUserCsvDTO(UserCsvDTO userCsvDTO);
 }
