@@ -97,6 +97,11 @@ public class UserController {
                                 responseCode = "404",
                                 description = "Not Found",
                                 content = @Content(schema = @Schema(hidden = true))
+                        ),
+                        @ApiResponse(
+                                responseCode = "500",
+                                description = "Internal Server Error",
+                                content = @Content(schema = @Schema(hidden = true))
                         )
                 }
         )
@@ -117,6 +122,11 @@ public class UserController {
                         @ApiResponse(
                                 responseCode = "404",
                                 description = "Not Found",
+                                content = @Content(schema = @Schema(hidden = true))
+                        ),
+                        @ApiResponse(
+                                responseCode = "500",
+                                description = "Internal Server Error",
                                 content = @Content(schema = @Schema(hidden = true))
                         )
                 }

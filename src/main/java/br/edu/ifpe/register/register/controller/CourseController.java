@@ -53,6 +53,28 @@ public class CourseController {
         this.courseService.insertCourse(course);
         return ResponseEntity.status(HttpStatus.CREATED).build(); 
     }
+    @Operation(
+            summary = "Get all courses",
+            description = "Endpoint responsible for getting all courses",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Ok",
+                            content = @Content(schema = @Schema(implementation = CourseDTO.class, type = "application/json"))
+                    ),
+                        @ApiResponse(
+                                responseCode = "404",
+                                description = "Not Found",
+                                content = @Content(schema = @Schema(hidden = true))
+                        ),
+            }
+    )
+
+    @GetMapping("")
+    public ResponseEntity<List<ResponseCourseDTO>> getAllCourses() {
+        final var courses = this.courseService.getAllCourses();
+        return ResponseEntity.ok(courses);
+    }
     @Operation( 
             summary = "Get a course by its id",
             description = "Endpoint responsible for getting a course by its id",
@@ -66,22 +88,11 @@ public class CourseController {
                         responseCode = "404",
                         description = "Not Found",
                         content = @Content(schema = @Schema(hidden = true))
-                    )
-            }
-    )
-    @GetMapping("")
-    public ResponseEntity<List<ResponseCourseDTO>> getAllCourses() {
-        final var courses = this.courseService.getAllCourses();
-        return ResponseEntity.ok(courses);
-    }
-    @Operation(
-            summary = "Get all courses",
-            description = "Endpoint responsible for getting all courses",
-            responses = {
+                    ),
                     @ApiResponse(
-                            responseCode = "200",
-                            description = "Ok",
-                            content = @Content(schema = @Schema(implementation = CourseDTO.class, type = "application/json"))
+                        responseCode = "500",
+                        description = "Internal Server Error",
+                        content = @Content(schema = @Schema(hidden = true))
                     )
             }
     )
