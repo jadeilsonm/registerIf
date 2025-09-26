@@ -1,6 +1,7 @@
 package br.edu.ifpe.register.register.controller;
 
 import br.edu.ifpe.register.register.dto.CreateUserDTO;
+import br.edu.ifpe.register.register.dto.ResponseCreateUserDTO;
 import br.edu.ifpe.register.register.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -58,8 +59,8 @@ public class UserController {
         }
     )
     @GetMapping("")
-        public ResponseEntity<List<CreateUserDTO>> getAllUsers() {
-                List<CreateUserDTO> users = userService.getAllUsers();
+        public ResponseEntity<List<ResponseCreateUserDTO>> getAllUsers() {
+                final var users = this.userService.getAllUsers();
                 return ResponseEntity.ok(users);
         }
         @Operation(
@@ -70,7 +71,7 @@ public class UserController {
                             responseCode = "200",
                             description = "Ok",
                             content = @Content(schema = @Schema(implementation = CreateUserDTO.class, type = "application/json"))
-                    )
+                    ),
                     @ApiResponse(
                         responseCode = "404",
                         description = "Not Found",
@@ -79,7 +80,7 @@ public class UserController {
             }
         )
         @GetMapping("/{id}")
-        public ResponseEntity<CreateUserDTO> getUserById(@PathVariable final String id) {
+        public ResponseEntity<ResponseCreateUserDTO> getUserById(@PathVariable final UUID id) {
                 final var user = this.userService.getUserById(id);
                 return ResponseEntity.ok(user);
         }
@@ -91,7 +92,7 @@ public class UserController {
                                 responseCode = "204",
                                 description = "No Content",
                                 content = @Content(schema = @Schema(hidden = true))
-                        )
+                        ),
                         @ApiResponse(
                                 responseCode = "404",
                                 description = "Not Found",
@@ -100,7 +101,7 @@ public class UserController {
                 }
         )
         @PutMapping("/{id}")
-        public ResponseEntity<Void> updateUser(@PathVariable final String id, @Valid @RequestBody CreateUserDTO user) {
+        public ResponseEntity<Void> updateUser(@PathVariable final UUID id, @Valid @RequestBody CreateUserDTO user) {
                 this.userService.updateUser(id, user);
                 return ResponseEntity.noContent().build();
         }
@@ -112,7 +113,7 @@ public class UserController {
                                 responseCode = "204",
                                 description = "No Content",
                                 content = @Content(schema = @Schema(hidden = true))
-                        )
+                        ),
                         @ApiResponse(
                                 responseCode = "404",
                                 description = "Not Found",
@@ -121,14 +122,10 @@ public class UserController {
                 }
         )
         @DeleteMapping("/{id}")
-        public ResponseEntity<Void> deleteUser(@PathVariable final String id) {
+        public ResponseEntity<Void> deleteUser(@PathVariable final UUID id) {
                 this.userService.deleteUser(id);
                 return ResponseEntity.noContent().build();
         }
-
-
-
-
 
 
 

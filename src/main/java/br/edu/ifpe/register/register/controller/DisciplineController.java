@@ -1,6 +1,7 @@
 package br.edu.ifpe.register.register.controller;
 
 import br.edu.ifpe.register.register.dto.DisciplineDTO;
+import br.edu.ifpe.register.register.dto.ResponseDisciplineDTO;
 import br.edu.ifpe.register.register.service.DisciplineService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,6 +12,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,9 +61,9 @@ public class DisciplineController {
         }
     )
     @GetMapping("")
-    public ResponseEntity<List<DisciplineDTO>> getAllDisciplines() {
+    public ResponseEntity<List<ResponseDisciplineDTO>> getAllDisciplines() {
         final var disciplines = this.disciplineService.getAllDisciplines();
-        return ResponseEntity.ok(disciplines).build();
+        return ResponseEntity.ok(disciplines);
     }
     @Operation(
             summary = "Get a discipline by its id",
@@ -71,7 +73,7 @@ public class DisciplineController {
                             responseCode = "200",
                             description = "Ok",
                             content = @Content(schema = @Schema(implementation = DisciplineDTO.class, type = "application/json"))
-                    )
+                    ),
                     @ApiResponse(
                         responseCode = "404",
                         description = "Not Found",
@@ -80,7 +82,7 @@ public class DisciplineController {
             }
     )
     @GetMapping("/{id}")
-    public ResponseEntity<DisciplineDTO> getDisciplineById(@PathVariable final UUID id) {
+    public ResponseEntity<ResponseDisciplineDTO> getDisciplineById(@PathVariable final UUID id) {
         final var discipline = this.disciplineService.getDisciplineById(id);
         return ResponseEntity.ok(discipline);
     }
@@ -92,7 +94,7 @@ public class DisciplineController {
                             responseCode = "204",
                             description = "No Content",
                             content = @Content(schema = @Schema(hidden = true))
-                    )
+                    ),
                     @ApiResponse(
                         responseCode = "404",
                         description = "Not Found",
@@ -113,7 +115,7 @@ public class DisciplineController {
                             responseCode = "204",
                             description = "No Content",
                             content = @Content(schema = @Schema(hidden = true))
-                    )
+                    ),
                     @ApiResponse(
                         responseCode = "404",
                         description = "Not Found",

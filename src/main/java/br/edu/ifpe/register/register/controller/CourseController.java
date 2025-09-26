@@ -1,6 +1,7 @@
 package br.edu.ifpe.register.register.controller;
 
 import br.edu.ifpe.register.register.dto.CourseDTO;
+import br.edu.ifpe.register.register.dto.ResponseCourseDTO;
 import br.edu.ifpe.register.register.service.CourseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,9 +12,11 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import java.util.UUID;
@@ -37,7 +40,7 @@ public class CourseController {
                             responseCode = "201",
                             description = "Created",
                             content = @Content(schema = @Schema(hidden = true))
-                    )
+                    ),
                     @ApiResponse(
                         responseCode = "400",
                         description = "Bad Request",
@@ -50,7 +53,7 @@ public class CourseController {
         this.courseService.insertCourse(course);
         return ResponseEntity.status(HttpStatus.CREATED).build(); 
     }
-    @Operation(
+    @Operation( 
             summary = "Get a course by its id",
             description = "Endpoint responsible for getting a course by its id",
             responses = {
@@ -58,7 +61,7 @@ public class CourseController {
                             responseCode = "200",
                             description = "Ok",
                             content = @Content(schema = @Schema(implementation = CourseDTO.class, type = "application/json"))
-                    )
+                    ),
                     @ApiResponse(
                         responseCode = "404",
                         description = "Not Found",
@@ -66,6 +69,11 @@ public class CourseController {
                     )
             }
     )
+    @GetMapping("")
+    public ResponseEntity<List<ResponseCourseDTO>> getAllCourses() {
+        final var courses = this.courseService.getAllCourses();
+        return ResponseEntity.ok(courses);
+    }
     @Operation(
             summary = "Get all courses",
             description = "Endpoint responsible for getting all courses",
@@ -77,13 +85,8 @@ public class CourseController {
                     )
             }
     )
-    @GetMapping("")
-    public ResponseEntity<List<CourseDTO>> getAllCourses() {
-        final var courses = this.courseService.getAllCourses();
-        return ResponseEntity.ok(courses);
-    }
     @GetMapping("/{id}")
-    public ResponseEntity<CourseDTO> getCourseById(@PathVariable final UUID id) {
+    public ResponseEntity<ResponseCourseDTO> getCourseById(@PathVariable final UUID id) {
         final var course = this.courseService.getCourseById(id);
         return ResponseEntity.ok(course);
     }
@@ -91,11 +94,11 @@ public class CourseController {
             summary = "Updates a course by its id",
             description = "Endpoint responsible for updating a course by its id",
             responses = {
-                    @ApiResponse(
+                    @ApiResponse (
                             responseCode = "200",
                             description = "Ok",
                             content = @Content(schema = @Schema(hidden = true))
-                    )
+                    ),
                     @ApiResponse(
                         responseCode = "404",
                         description = "Not Found",
@@ -116,7 +119,7 @@ public class CourseController {
                             responseCode = "204",
                             description = "No Content",
                             content = @Content(schema = @Schema(hidden = true))
-                    )
+                    ),
                     @ApiResponse(
                         responseCode = "404",
                         description = "Not Found",
@@ -128,5 +131,5 @@ public class CourseController {
     public ResponseEntity<Void> deleteCourse(@PathVariable final UUID id) {
         this.courseService.deleteCourse(id);
         return ResponseEntity.noContent().build();
-    }
+    } 
 }
