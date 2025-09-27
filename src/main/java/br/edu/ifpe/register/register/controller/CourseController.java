@@ -43,12 +43,30 @@ public class CourseController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @Operation(
+            summary = "Get all courses",
+            description = "Retrieves a list of all courses",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "List of courses returned successfully"
+                    )
+            }
+    )
     @GetMapping("")
     public ResponseEntity<List<CourseDTO>> getAllCourses(){
         List<CourseDTO> courses = this.courseService.getAllCourses();
         return ResponseEntity.ok(courses);
     }
 
+    @Operation(
+            summary = "Get course by ID",
+            description = "Retrieves a single course by its id",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Course Found"),
+                    @ApiResponse(responseCode = "404", description = "Course not found")
+            }
+    )
     @GetMapping("/{id}")
     public ResponseEntity<CourseDTO> getCourseById(@PathVariable UUID id) {
         Optional<CourseDTO> course = courseService.getCourseById(id);
@@ -56,6 +74,14 @@ public class CourseController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @Operation(
+            summary = "Update a course",
+            description = "Updates an existing course by ID",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Course updated successfully"),
+                    @ApiResponse(responseCode = "404", description = "Course not found")
+            }
+    )
     @PutMapping("/{id}")
     public ResponseEntity<CourseDTO> updateCourse(@PathVariable UUID id, @Valid @RequestBody CourseDTO courseDTO){
         Optional<CourseDTO> updatedCourse = courseService.updateCourse(id, courseDTO);
@@ -63,6 +89,14 @@ public class CourseController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @Operation(
+            summary = "Delete a course",
+            description = "Deletes a course by its ID",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Course deleted successfully"),
+                    @ApiResponse(responseCode = "404", description = "Course not found")
+            }
+    )
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCourse(@PathVariable UUID id) {
         boolean deleted = courseService.deleteCourse(id);
