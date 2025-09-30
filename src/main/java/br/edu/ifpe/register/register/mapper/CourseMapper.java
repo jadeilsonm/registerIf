@@ -11,8 +11,6 @@ import org.mapstruct.MappingTarget;
 public interface CourseMapper {
     @Mapping(target = "id", ignore = true)
     Course toEntity(CourseDTO courseDTO);
-    ResponseCourseDTO toResponseCourseDTO(Course course);
 
-    @Mapping(target = "id", ignore = true)
-    void updateEntity(CourseDTO courseDTO, @MappingTarget Course course);
+    CourseDTO toDto(Course course);
 }
