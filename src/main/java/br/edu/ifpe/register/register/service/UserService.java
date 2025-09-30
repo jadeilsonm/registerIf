@@ -1,6 +1,7 @@
 package br.edu.ifpe.register.register.service;
 
 import br.edu.ifpe.register.register.dto.CreateUserDTO;
+import br.edu.ifpe.register.register.dto.ResponseCreateUserDTO;
 import br.edu.ifpe.register.register.dto.UserCsvDTO;
 import br.edu.ifpe.register.register.entity.User;
 import br.edu.ifpe.register.register.mapper.UserMapper;
@@ -16,8 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -38,7 +42,23 @@ public class UserService {
         final User newUser = userMapper.toEntity(user);
         this.processingUser(newUser);
     }
-
+    public List<ResponseCreateUserDTO> getAllUsers(){
+        return this.userRepository.findAll().stream().map(userMapper::toResponseCreateUserDTO).collect(Collectors.toList());
+    }
+    public ResponseCreateUserDTO getUserById(final UUID id) {
+        return this.userRepository.findById(id).map(userMapper::toResponseCreateUserDTO).orElseThrow();
+    }
+    public void updateUser(final UUID id, final CreateUserDTO user) {
+        final var existingUser = userRepository.findById(id).orElseThrow();
+        userMapper.updateEntity(user, existingUser);
+        this.processingUser(existingUser);
+    }
+    public void deleteUser(final UUID id) {
+        if (!userRepository.existsById(id)) {
+            throw new RuntimeException("User not found id: " + id);
+        }
+        userRepository.deleteById(id);
+    }
     public void userRegisterByFile(final MultipartFile file) {
         try (Reader reader = new InputStreamReader(file.getInputStream())) {
             CsvToBean<UserCsvDTO> csvToBean = new CsvToBeanBuilder<UserCsvDTO>(reader)

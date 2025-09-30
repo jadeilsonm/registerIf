@@ -1,11 +1,16 @@
 package br.edu.ifpe.register.register.service;
 
 import br.edu.ifpe.register.register.dto.DisciplineDTO;
+import br.edu.ifpe.register.register.dto.ResponseDisciplineDTO;
 import br.edu.ifpe.register.register.exceptions.NotFoundException;
 import br.edu.ifpe.register.register.mapper.DisciplineMapper;
 import br.edu.ifpe.register.register.repository.CourseRepository;
 import br.edu.ifpe.register.register.repository.DisciplineRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class DisciplineService {
@@ -30,5 +35,25 @@ public class DisciplineService {
         newDiscipline.setCourse(course);
 
         disciplineRepository.save(newDiscipline);
+    }
+    public List<ResponseDisciplineDTO> getAllDisciplines(){
+        return this.disciplineRepository.findAll().stream().map(disciplineMapper::toResponseDisciplineDTO).collect(Collectors.toList());
+    }
+    public ResponseDisciplineDTO getDisciplineById(final UUID id) {
+        return disciplineMapper.toResponseDisciplineDTO(this.disciplineRepository.findById(id).orElseThrow());
+    }
+    public void updateDiscipline(final UUID id, final DisciplineDTO discipline) {
+        final var existingDiscipline = disciplineRepository.findById(id).orElseThrow();
+        disciplineMapper.updateEntity(discipline, existingDiscipline);
+        if (!existingDiscipline.getCourse().getId().equals(discipline.getCourseId())) {
+            var course = courseRepository.findById(discipline.getCourseId())
+                    .orElseThrow(() ->
+                            new NotFoundException("Curse not found course_id: " + discipline.getCourseId()));
+            existingDiscipline.setCourse(course);
+        }
+        disciplineRepository.save(existingDiscipline);
+    }
+    public void deleteDiscipline(final UUID id) {
+        disciplineRepository.deleteById(id);
     }
 }

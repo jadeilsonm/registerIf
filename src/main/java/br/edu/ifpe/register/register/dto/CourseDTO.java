@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class CourseDTO {
     @NotBlank(message = "name is required")
-    @Size(min = 3, max = 150, message = "The name must be between 3 and 100 characters long.")
+    @Size(min = 3, max = 150, message = "The name must be between 3 and 150 characters long.")
     private String name;
     private String acronym;
     @Min(1)
