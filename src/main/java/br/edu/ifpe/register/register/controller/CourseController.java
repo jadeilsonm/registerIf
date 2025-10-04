@@ -1,6 +1,7 @@
 package br.edu.ifpe.register.register.controller;
 
 import br.edu.ifpe.register.register.dto.CourseDTO;
+import br.edu.ifpe.register.register.dto.ResponseCourseDTO;
 import br.edu.ifpe.register.register.service.CourseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -54,8 +55,8 @@ public class CourseController {
             }
     )
     @GetMapping("")
-    public ResponseEntity<List<CourseDTO>> getAllCourses(){
-        List<CourseDTO> courses = this.courseService.getAllCourses();
+    public ResponseEntity<List<ResponseCourseDTO>> getAllCourses(){
+        List<ResponseCourseDTO> courses = this.courseService.getAllCourses();
         return ResponseEntity.ok(courses);
     }
 
@@ -68,8 +69,8 @@ public class CourseController {
             }
     )
     @GetMapping("/{id}")
-    public ResponseEntity<CourseDTO> getCourseById(@PathVariable UUID id) {
-        Optional<CourseDTO> course = courseService.getCourseById(id);
+    public ResponseEntity<ResponseCourseDTO> getCourseById(@PathVariable UUID id) {
+        Optional<ResponseCourseDTO> course = courseService.getCourseById(id);
         return course.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

@@ -13,4 +13,5 @@ public interface CourseMapper {
     Course toEntity(CourseDTO courseDTO);
 
     CourseDTO toDto(Course course);
+    ResponseCourseDTO toResponseDto(Course course);
 }

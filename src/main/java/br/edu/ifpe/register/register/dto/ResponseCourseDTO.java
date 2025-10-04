@@ -8,7 +8,6 @@ import java.util.UUID;
 
 @Getter
 @Setter
-
 public class ResponseCourseDTO {
     private UUID id;
     private String name;

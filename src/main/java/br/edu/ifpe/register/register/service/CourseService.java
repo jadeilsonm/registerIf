@@ -1,6 +1,7 @@
 package br.edu.ifpe.register.register.service;
 
 import br.edu.ifpe.register.register.dto.CourseDTO;
+import br.edu.ifpe.register.register.dto.ResponseCourseDTO;
 import br.edu.ifpe.register.register.entity.Course;
 import br.edu.ifpe.register.register.mapper.CourseMapper;
 import br.edu.ifpe.register.register.repository.CourseRepository;
@@ -26,16 +27,16 @@ public class CourseService {
         this.courseRepository.save(courseMapper.toEntity(course));
     }
 
-    public List<CourseDTO> getAllCourses(){
+    public List<ResponseCourseDTO> getAllCourses(){
         return this.courseRepository.findAll()
                 .stream()
-                .map(courseMapper::toDto)
+                .map(courseMapper::toResponseDto)
                 .toList();
     }
 
-    public Optional<CourseDTO> getCourseById(UUID id){
+    public Optional<ResponseCourseDTO> getCourseById(UUID id){
         return courseRepository.findById(id)
-                .map(courseMapper::toDto);
+                .map(courseMapper::toResponseDto);
     }
 
     public Optional<CourseDTO> updateCourse(UUID id, CourseDTO courseDTO){
