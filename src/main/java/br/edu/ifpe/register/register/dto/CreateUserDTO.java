@@ -24,4 +24,5 @@ public class CreateUserDTO {
     @Size(max = 20, message = "The name registration be between 1 and 20 characters long.")
     String registration;
     String password;
+    String role;
 }
