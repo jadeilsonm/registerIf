@@ -23,4 +23,5 @@ public class CreateUserDTO {
     @Schema(description = "unique registration per user", example = "2022ADSPM0123")
     @Size(max = 20, message = "The name registration be between 1 and 20 characters long.")
     String registration;
+    String password;
 }
