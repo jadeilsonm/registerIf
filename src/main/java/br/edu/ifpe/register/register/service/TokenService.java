@@ -23,7 +23,7 @@ public class TokenService {
             token = token.trim();
             return JWT.decode(token).getSubject();
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao extrair UUID do token.");
+            throw new RuntimeException("Error in extract UUID of the token.");
         }
     }
 
@@ -40,7 +40,7 @@ public class TokenService {
                     .withExpiresAt(generateExpirationDate())
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
-            throw new RuntimeException("erro ao autenticar");
+            throw new RuntimeException("error in authenticated");
         }
     }
 

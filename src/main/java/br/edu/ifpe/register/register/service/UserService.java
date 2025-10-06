@@ -11,6 +11,7 @@ import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import org.springframework.amqp.AmqpConnectException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,17 +30,21 @@ public class UserService {
     private final RegisterSend registerSend;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public UserService(final RegisterSend registerSend,
                        final UserRepository userRepository,
-                       final UserMapper userMapper) {
+                       final UserMapper userMapper,
+                       final BCryptPasswordEncoder passwordEncoder) {
         this.registerSend = registerSend;
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void userRegister(final CreateUserDTO user) {
         final User newUser = userMapper.toEntity(user);
+        newUser.setPassword(passwordEncoder.encode(user.getPassword()));
         this.processingUser(newUser);
     }
     public List<ResponseCreateUserDTO> getAllUsers(){

@@ -1,5 +1,6 @@
 package br.edu.ifpe.register.register.entity;
 
+import br.edu.ifpe.register.register.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,4 +25,7 @@ public class User {
     public String name;
     @Column(unique = true, length = 150)
     public String email;
+    public String password;
+    @Enumerated(EnumType.STRING)
+    public Role role;
 }
