@@ -42,7 +42,7 @@ public class DisciplineService {
     public ResponseDisciplineDTO getDisciplineById(final UUID id) {
         return disciplineMapper.toResponseDisciplineDTO(this.disciplineRepository.findById(id).orElseThrow(
                 () ->
-                        new NotFoundException("Discipline not found course_id: " + id)
+                        new NotFoundException("Discipline not found discipline_id: " + id)
         ));
     }
     public void updateDiscipline(final UUID id, final DisciplineDTO discipline) {
