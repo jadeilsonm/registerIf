@@ -4,6 +4,7 @@ import br.edu.ifpe.register.register.dto.CreateUserDTO;
 import br.edu.ifpe.register.register.dto.ResponseCreateUserDTO;
 import br.edu.ifpe.register.register.dto.UserCsvDTO;
 import br.edu.ifpe.register.register.entity.User;
+import br.edu.ifpe.register.register.entity.enums.Role;
 import br.edu.ifpe.register.register.mapper.UserMapper;
 import br.edu.ifpe.register.register.repository.UserRepository;
 import br.edu.ifpe.register.register.service.rabbit.RegisterSend;
@@ -45,6 +46,7 @@ public class UserService {
     public void userRegister(final CreateUserDTO user) {
         final User newUser = userMapper.toEntity(user);
         newUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        newUser.setRole(Role.STUDENT);
         this.processingUser(newUser);
     }
     public List<ResponseCreateUserDTO> getAllUsers(){
