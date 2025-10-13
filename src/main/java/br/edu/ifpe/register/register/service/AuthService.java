@@ -5,6 +5,7 @@ import br.edu.ifpe.register.register.entity.User;
 import br.edu.ifpe.register.register.repository.UserRepository;
 import jakarta.security.auth.message.AuthException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,11 +13,11 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final TokenService tokenService;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public AuthService(final UserRepository userRepository,
                        final TokenService tokenService,
-                       final BCryptPasswordEncoder passwordEncoder) {
+                       final PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.tokenService = tokenService;
         this.passwordEncoder = passwordEncoder;
