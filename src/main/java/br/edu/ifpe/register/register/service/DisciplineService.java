@@ -40,7 +40,10 @@ public class DisciplineService {
         return this.disciplineRepository.findAll().stream().map(disciplineMapper::toResponseDisciplineDTO).collect(Collectors.toList());
     }
     public ResponseDisciplineDTO getDisciplineById(final UUID id) {
-        return disciplineMapper.toResponseDisciplineDTO(this.disciplineRepository.findById(id).orElseThrow());
+        return disciplineMapper.toResponseDisciplineDTO(this.disciplineRepository.findById(id).orElseThrow(
+                () ->
+                        new NotFoundException("Discipline not found discipline_id: " + id)
+        ));
     }
     public void updateDiscipline(final UUID id, final DisciplineDTO discipline) {
         final var existingDiscipline = disciplineRepository.findById(id).orElseThrow();
