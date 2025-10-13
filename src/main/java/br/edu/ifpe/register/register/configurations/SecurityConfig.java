@@ -22,6 +22,9 @@ public class SecurityConfig {
     @Autowired
     SecurityFilter securityFilter;
 
+    @Autowired
+    CustomUserDetailsService userDetailsService;
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
@@ -47,7 +50,8 @@ public class SecurityConfig {
                                         "/webjars/**",
                                         "/error").permitAll()
                                 .anyRequest().authenticated()
-                ).addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
+                ).addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                .userDetailsService(userDetailsService);
         return http.build();
     }
 
