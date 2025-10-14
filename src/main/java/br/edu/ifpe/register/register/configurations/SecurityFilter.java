@@ -41,7 +41,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             if (login != null) {
                 var user = userRepository.findById(UUID.fromString(login))
                         .orElseThrow(() -> new NotFoundException("User Not Found"));
-                var authorities = Collections.singletonList(new SimpleGrantedAuthority("roles"));
+                var authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().toAuthorize()));
                 var authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
