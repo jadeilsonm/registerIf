@@ -4,7 +4,6 @@ import br.edu.ifpe.register.register.dto.LoginDTO;
 import br.edu.ifpe.register.register.entity.User;
 import br.edu.ifpe.register.register.repository.UserRepository;
 import jakarta.security.auth.message.AuthException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
