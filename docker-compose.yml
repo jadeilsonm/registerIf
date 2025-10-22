@@ -22,6 +22,13 @@ services:
       SPRING_DATASOURCE_URL: 'jdbc:postgresql://pg:5432/registerIf'
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_RABBITMQ_HOST: 'rabbit'
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: 'pontoif'
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      SPRING_RABBITMQ_VIRTUAL_HOST: '/'
+      SPRING_REDIS_PORT: 6379
+      SPRING_REDIS_HOST: 'redis'
       ADDRESS_REDIS: 'redis://redis:6379'
     ports:
       - '8080:8080'
@@ -46,8 +53,15 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: 'pontoif'
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    networks:
+      - my-networks
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "check_port_connectivity" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
   my-networks:
