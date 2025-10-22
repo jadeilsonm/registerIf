@@ -5,5 +5,9 @@ public enum Role {
     PROFESSOR,
     STUDENT,
     SECRETARY,
-    TECHNICIAN
+    TECHNICIAN;
+
+    public String toAuthorize() {
+        return "ROLE_"+ this.name();
+    }
 }
