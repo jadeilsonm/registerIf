@@ -30,6 +30,6 @@ public class CreateUserDTO {
     String registration;
     @Schema(description = "password fo user, nullable = false", example = "password")
     String password;
-    @Pattern(regexp = "ADMIN|STUDENT|PROFESSOR|SECRETARY", message = "Invalid role")
+    @Pattern(regexp = "ADMIN|STUDENT|PROFESSOR|SECRETARY|TECHNICIAN", message = "Invalid role")
     String role;
 }
