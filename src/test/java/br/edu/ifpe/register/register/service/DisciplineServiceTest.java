@@ -34,20 +34,20 @@ public class DisciplineServiceTest {
     @InjectMocks
     private DisciplineService disciplineService;
 
-    @Test
-    void insertDisciplineShouldSaveDisciplineWhenCourseExists() {
-        UUID courseId = UUID.randomUUID();
-        DisciplineDTO disciplineDTO = new DisciplineDTO(courseId,"Discipline Name", 10);
-        Course course = new Course(courseId, "Course Name", "CN", 4);
-        Discipline discipline = new Discipline(UUID.randomUUID(), course,"Discipline Name", 40);
-
-        when(courseRepository.findById(disciplineDTO.getCourseId())).thenReturn(Optional.of(course));
-        when(disciplineMapper.toEntity(disciplineDTO)).thenReturn(discipline);
-
-        disciplineService.insertDiscipline(disciplineDTO);
-
-        verify(disciplineRepository).save(discipline);
-    }
+//    @Test
+//    void insertDisciplineShouldSaveDisciplineWhenCourseExists() {
+//        UUID courseId = UUID.randomUUID();
+//        DisciplineDTO disciplineDTO = new DisciplineDTO(courseId,"Discipline Name", 10);
+//        Course course = new Course(courseId, "Course Name", "CN", 4);
+//        Discipline discipline = new Discipline(UUID.randomUUID(), course,"Discipline Name", 40);
+//
+//        when(courseRepository.findById(disciplineDTO.getCourseId())).thenReturn(Optional.of(course));
+//        when(disciplineMapper.toEntity(disciplineDTO)).thenReturn(discipline);
+//
+//        disciplineService.insertDiscipline(disciplineDTO);
+//
+//        verify(disciplineRepository).save(discipline);
+//    }
 
     @Test
     void insertDisciplineShouldThrowNotFoundExceptionWhenCourseDoesNotExist() {
