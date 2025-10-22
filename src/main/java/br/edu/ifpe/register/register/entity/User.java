@@ -18,14 +18,15 @@ import java.util.UUID;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    public UUID id;
+    private UUID id;
     @Column(unique = true, length = 20)
-    public String registration;
+    private String registration;
     @Column(length = 150)
-    public String name;
+    private String name;
     @Column(unique = true, length = 150)
-    public String email;
-    public String password;
+    private String email;
+    private String password;
     @Enumerated(EnumType.STRING)
-    public Role role;
+    private Role role;
+    private Boolean isActive;
 }

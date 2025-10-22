@@ -26,7 +26,6 @@ class TokenServiceTest {
     @InjectMocks
     private TokenService tokenService;
 
-    @Value("${api.security.token.secret}")
     private String secret = "secretKeyForTestingPurposesOnly";
 
     @Test

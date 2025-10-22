@@ -1,10 +1,12 @@
 package br.edu.ifpe.register.register.service;
 
+import br.edu.ifpe.register.register.configurations.RabbitMQConfig;
 import br.edu.ifpe.register.register.dto.CourseDTO;
 import br.edu.ifpe.register.register.dto.ResponseCourseDTO;
 import br.edu.ifpe.register.register.entity.Course;
 import br.edu.ifpe.register.register.mapper.CourseMapper;
 import br.edu.ifpe.register.register.repository.CourseRepository;
+import br.edu.ifpe.register.register.service.rabbit.RabbitSend;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,15 +18,20 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
     private final CourseMapper courseMapper;
+    private final RabbitSend rabbitSend;
 
     public CourseService(final CourseRepository courseRepository,
-                         final CourseMapper courseMapper) {
+                         final CourseMapper courseMapper,
+                         final RabbitSend rabbitSend
+                       ) {
         this.courseRepository = courseRepository;
         this.courseMapper = courseMapper;
+        this.rabbitSend = rabbitSend;
     }
 
     public void insertCourse(final CourseDTO course) {
-        this.courseRepository.save(courseMapper.toEntity(course));
+        var courseEntity = this.courseRepository.save(courseMapper.toEntity(course));
+        rabbitSend.send(courseEntity, null, RabbitMQConfig.QUEUE_COURSE_CREATED);
     }
 
     public List<ResponseCourseDTO> getAllCourses(){
@@ -45,6 +52,7 @@ public class CourseService {
             existing.setAcronym(courseDTO.getAcronym());
             existing.setDuration(courseDTO.getDuration());
             Course updated = courseRepository.save(existing);
+            rabbitSend.send(updated, null, RabbitMQConfig.QUEUE_COURSE_UPDATE);
             return courseMapper.toDto(updated);
         });
     }
