@@ -19,7 +19,7 @@ public class RabbitSend {
         if (exchange != null && queue != null) {
             rabbitTemplate.convertAndSend(exchange, queue, message);
         } else if (exchange != null) {
-            rabbitTemplate.convertAndSend(exchange, message);
+            rabbitTemplate.convertAndSend(exchange,null, message);
         } else {
             rabbitTemplate.convertAndSend(queue, message);
         }

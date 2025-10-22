@@ -33,9 +33,12 @@ services:
     ports:
       - '8080:8080'
     depends_on:
-      - redis
-      - rabbit
-      - pg
+      redis:
+        condition: service_started
+      rabbit:
+        condition: service_healthy
+      pg:
+        condition: service_started
   redis:
     image: redis:7
     container_name: 'REDIS'

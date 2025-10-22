@@ -6,11 +6,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -37,10 +39,8 @@ public class SecurityConfig {
 
         configuration.setAllowedOrigins(List.of("*"));
 
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
-        configuration.setAllowCredentials(false);
-        configuration.setMaxAge(3600L);
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -49,32 +49,27 @@ public class SecurityConfig {
     }
 
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring()
-                .requestMatchers("/swagger-ui/**", "/v3/api-docs*/**");
-    }
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http,
-                                                   CorsConfigurationSource corsConfigurationSource) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
         http
+                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource))
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling.authenticationEntryPoint(customAuthenticationEntryPoint)
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers("/api/v1/resgisterif/user").permitAll() // TODO: voltar paraautorizar apenas ADMIN e SECRETARY
-                        .requestMatchers(HttpMethod.DELETE).hasAnyRole(Role.ADMIN.name(), Role.SECRETARY.name())
                         .requestMatchers(
-                                        "/swagger-ui.html",
-                                        "/static/**",
-                                        "/swagger-ui/**",
-                                        "/v3/api-docs",
-                                        "/v3/api-docs/**",
-                                        "/api-docs",
-                                        "/webjars/**",
-                                        "/error").permitAll()
-                                .anyRequest().authenticated()
+                                "/swagger-ui.html",
+                                "/static/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs",
+                                "/v3/api-docs/**",
+                                "/api-docs",
+                                "/webjars/**",
+                                "/error").permitAll().requestMatchers("/course/**").permitAll().requestMatchers("/discipline/**").permitAll()
+                        .requestMatchers("/api/v1/**").permitAll() // TODO: voltar paraautorizar apenas ADMIN e SECRETARY
+//                        .requestMatchers(HttpMethod.DELETE).hasAnyRole(Role.ADMIN.name(), Role.SECRETARY.name()) .anyRequest().authenticated()
+
                 ).addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .userDetailsService(userDetailsService);
         return http.build();
