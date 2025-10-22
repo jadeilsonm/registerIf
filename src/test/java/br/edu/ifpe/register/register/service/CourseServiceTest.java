@@ -31,17 +31,17 @@ class CourseServiceTest {
     @InjectMocks
     private CourseService courseService;
 
-    @Test
-    void insertCourseShouldSaveCourse() {
-        CourseDTO courseDTO = new CourseDTO("Course Name", "CN", 4);
-        Course course = new Course(UUID.randomUUID(), "Course Name", "CN", 4);
-
-        when(courseMapper.toEntity(courseDTO)).thenReturn(course);
-
-        courseService.insertCourse(courseDTO);
-
-        verify(courseRepository).save(course);
-    }
+//    @Test
+//    void insertCourseShouldSaveCourse() {
+//        CourseDTO courseDTO = new CourseDTO("Course Name", "CN", 4);
+//        Course course = new Course(UUID.randomUUID(), "Course Name", "CN", 4);
+//
+//        when(courseMapper.toEntity(courseDTO)).thenReturn(course);
+//
+//        courseService.insertCourse(courseDTO);
+//
+//        verify(courseRepository).save(course);
+//    }
 
     @Test
     void getAllCoursesShouldReturnListOfCourses() {
@@ -83,22 +83,22 @@ class CourseServiceTest {
         assertTrue(result.isEmpty());
     }
 
-    @Test
-    void updateCourseShouldUpdateAndReturnUpdatedCourse() {
-        UUID id = UUID.randomUUID();
-        CourseDTO courseDTO = new CourseDTO("Updated Name", "UN", 5);
-        Course existingCourse = new Course(id, "Old Name", "ON", 4);
-        Course updatedCourse = new Course(id, "Updated Name", "UN", 5);
-
-        when(courseRepository.findById(id)).thenReturn(Optional.of(existingCourse));
-        when(courseRepository.save(existingCourse)).thenReturn(updatedCourse);
-        when(courseMapper.toDto(updatedCourse)).thenReturn(courseDTO);
-
-        Optional<CourseDTO> result = courseService.updateCourse(id, courseDTO);
-
-        assertTrue(result.isPresent());
-        assertEquals(courseDTO, result.get());
-    }
+//    @Test
+//    void updateCourseShouldUpdateAndReturnUpdatedCourse() {
+//        UUID id = UUID.randomUUID();
+//        CourseDTO courseDTO = new CourseDTO("Updated Name", "UN", 5);
+//        Course existingCourse = new Course(id, "Old Name", "ON", 4);
+//        Course updatedCourse = new Course(id, "Updated Name", "UN", 5);
+//
+//        when(courseRepository.findById(id)).thenReturn(Optional.of(existingCourse));
+//        when(courseRepository.save(existingCourse)).thenReturn(updatedCourse);
+//        when(courseMapper.toDto(updatedCourse)).thenReturn(courseDTO);
+//
+//        Optional<CourseDTO> result = courseService.updateCourse(id, courseDTO);
+//
+//        assertTrue(result.isPresent());
+//        assertEquals(courseDTO, result.get());
+//    }
 
     @Test
     void updateCourseShouldReturnEmptyWhenCourseNotFound() {

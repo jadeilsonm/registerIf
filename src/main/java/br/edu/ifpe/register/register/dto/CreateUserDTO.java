@@ -3,12 +3,17 @@ package br.edu.ifpe.register.register.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CreateUserDTO {
     @Schema(description = "Name is required", example = "João de deus")
     @NotBlank(message = "name is required")
@@ -23,5 +28,8 @@ public class CreateUserDTO {
     @Schema(description = "unique registration per user", example = "2022ADSPM0123")
     @Size(max = 20, message = "The name registration be between 1 and 20 characters long.")
     String registration;
+    @Schema(description = "password fo user, nullable = false", example = "password")
     String password;
+    @Pattern(regexp = "ADMIN|STUDENT|PROFESSOR|SECRETARY|TECHNICIAN", message = "Invalid role")
+    String role;
 }

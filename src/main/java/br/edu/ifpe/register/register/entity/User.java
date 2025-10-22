@@ -1,5 +1,6 @@
 package br.edu.ifpe.register.register.entity;
 
+import br.edu.ifpe.register.register.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,11 +18,15 @@ import java.util.UUID;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    public UUID id;
+    private UUID id;
     @Column(unique = true, length = 20)
-    public String registration;
+    private String registration;
     @Column(length = 150)
-    public String name;
+    private String name;
     @Column(unique = true, length = 150)
-    public String email;
+    private String email;
+    private String password;
+    @Enumerated(EnumType.STRING)
+    private Role role;
+    private Boolean isActive;
 }

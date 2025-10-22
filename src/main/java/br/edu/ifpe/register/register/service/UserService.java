@@ -1,16 +1,19 @@
 package br.edu.ifpe.register.register.service;
 
+import br.edu.ifpe.register.register.configurations.RabbitMQConfig;
 import br.edu.ifpe.register.register.dto.CreateUserDTO;
 import br.edu.ifpe.register.register.dto.ResponseCreateUserDTO;
 import br.edu.ifpe.register.register.dto.UserCsvDTO;
 import br.edu.ifpe.register.register.entity.User;
+import br.edu.ifpe.register.register.entity.enums.Role;
 import br.edu.ifpe.register.register.mapper.UserMapper;
 import br.edu.ifpe.register.register.repository.UserRepository;
-import br.edu.ifpe.register.register.service.rabbit.RegisterSend;
+import br.edu.ifpe.register.register.service.rabbit.RabbitSend;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import org.springframework.amqp.AmqpConnectException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,22 +29,47 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
 
-    private final RegisterSend registerSend;
+    private final RabbitSend rabbitSend;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public UserService(final RegisterSend registerSend,
+    public UserService(final RabbitSend rabbitSend,
                        final UserRepository userRepository,
-                       final UserMapper userMapper) {
-        this.registerSend = registerSend;
+                       final UserMapper userMapper,
+                       final BCryptPasswordEncoder passwordEncoder) {
+        this.rabbitSend = rabbitSend;
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void userRegister(final CreateUserDTO user) {
         final User newUser = userMapper.toEntity(user);
-        this.processingUser(newUser);
+
+        Role role = Role.valueOf(user.getRole());
+        newUser.setRole(role);
+
+        newUser.setPassword(passwordEncoder.encode(
+                this.generatePassword(role, user.getPassword())
+        ));
+
+        this.processingUser(newUser, RabbitMQConfig.EXCHANGE_CREATED);
     }
+
+    private String generatePassword(Role role, String basePassword) {
+        if (basePassword == null) {
+            return switch (role) {
+                case ADMIN -> "adminifpe";
+                case STUDENT -> "alunoifpe2025";
+                case PROFESSOR -> "profifpe2025";
+                case TECHNICIAN ->  "tecifpe2025";
+                default -> "default2025";
+            };
+        }
+        return basePassword;
+    }
+
     public List<ResponseCreateUserDTO> getAllUsers(){
         return this.userRepository.findAll().stream().map(userMapper::toResponseCreateUserDTO).collect(Collectors.toList());
     }
@@ -51,12 +79,13 @@ public class UserService {
     public void updateUser(final UUID id, final CreateUserDTO user) {
         final var existingUser = userRepository.findById(id).orElseThrow();
         userMapper.updateEntity(user, existingUser);
-        this.processingUser(existingUser);
+        this.processingUser(existingUser, RabbitMQConfig.EXCHANGE_UPDATE);
     }
+
     public void deleteUser(final UUID id) {
-        if (!userRepository.existsById(id)) {
-            throw new RuntimeException("User not found id: " + id);
-        }
+        User user = userRepository.findById(id).orElseThrow();
+        user.setIsActive(false);
+        processingUser(user, RabbitMQConfig.EXCHANGE_UPDATE);
         userRepository.deleteById(id);
     }
     public void userRegisterByFile(final MultipartFile file) {
@@ -67,7 +96,7 @@ public class UserService {
             var users = csvToBean.parse();
             users.forEach(user -> {
                 var newUser = userMapper.ToEntityByUserCsvDTO(user);
-                this.processingUser(newUser);
+                this.processingUser(newUser, RabbitMQConfig.EXCHANGE_CREATED);
             });
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -76,10 +105,10 @@ public class UserService {
         }
     }
 
-    private void processingUser(final User user) {
+    private void processingUser(final User user, String exchange) {
         try {
             userRepository.save(user);
-            registerSend.send(user);
+            rabbitSend.send(user, exchange, null);
         } catch (DataIntegrityViolationException ex) {
             Logger.getLogger(UserService.class.getName())
                     .log(Level.SEVERE,

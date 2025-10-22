@@ -18,7 +18,7 @@ import java.util.UUID;
 import java.util.List;
 
 @RestController
-@RequestMapping("/register")
+@RequestMapping("/api/v1/registerif/user")
 @Tag(name = "User management", description = "API to manage users")
 public class UserController {
 
