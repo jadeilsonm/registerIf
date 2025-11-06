@@ -1,20 +1,20 @@
 services:
   pg:
     container_name: 'POSTGRES'
-    image: 'postgres:11'
+    image: 'postgres:15'
     restart: 'always'
     ports:
       - "5432:5432"
-    networks:
-      - my-networks
     environment:
-      POSTGRES_DB: 'registerIf'
+      POSTGRES_DB: registerIf
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-       - ./postgresql.conf:/etc/postgresql/postgresql.conf
-    command: [ "postgres", "-c", "config_file=/etc/postgresql/postgresql.conf" ]
+      - ./postgresql.conf:/tmp/postgresql.conf
+    command: [ "postgres", "-c", "config_file=/tmp/postgresql.conf" ]
+    networks:
+      - my-networks
   api:
     container_name: 'API'
     build: .
