@@ -13,6 +13,7 @@ public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "role", ignore = true)
+    @Mapping(target = "isActive", ignore = true)
     User toEntity(CreateUserDTO createUserDTO);
 
     ResponseCreateUserDTO toResponseCreateUserDTO(User user);
@@ -20,10 +21,12 @@ public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "role", ignore = true)
+    @Mapping(target = "isActive", ignore = true)
     void updateEntity(CreateUserDTO createUserDTO, @org.mapstruct.MappingTarget User user);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "role", ignore = true)
+    @Mapping(target = "isActive", ignore = true)
     User ToEntityByUserCsvDTO(UserCsvDTO userCsvDTO);
 }

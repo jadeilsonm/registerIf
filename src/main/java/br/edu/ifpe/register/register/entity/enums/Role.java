@@ -5,6 +5,7 @@ public enum Role {
     PROFESSOR,
     STUDENT,
     SECRETARY,
+    OTHER,
     TECHNICIAN;
 
     public String toAuthorize() {

@@ -96,6 +96,8 @@ public class UserService {
             var users = csvToBean.parse();
             users.forEach(user -> {
                 var newUser = userMapper.ToEntityByUserCsvDTO(user);
+                newUser.setRole(Role.STUDENT);
+                newUser.setPassword(passwordEncoder.encode(this.generatePassword(Role.STUDENT, null)));
                 this.processingUser(newUser, RabbitMQConfig.EXCHANGE_CREATED);
             });
         } catch (IOException e) {

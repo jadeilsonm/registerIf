@@ -14,4 +14,6 @@ public class UserCsvDTO {
     private String registration;
     @CsvBindByName(column = "email")
     private String email;
+    @CsvBindByName(column = "phone")
+    private String phone;
 }

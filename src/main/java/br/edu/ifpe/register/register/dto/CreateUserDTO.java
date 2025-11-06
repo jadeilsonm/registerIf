@@ -23,13 +23,16 @@ public class CreateUserDTO {
     @NotBlank(message = "email is required")
     @Schema(description = "unique email per user", example = "joao@email.com")
     @Size(max = 150, message = "The email must be between 1 and 150 characters long.")
-    String email;
+    private String email;
     @NotBlank(message = "registration is required")
     @Schema(description = "unique registration per user", example = "2022ADSPM0123")
     @Size(max = 20, message = "The name registration be between 1 and 20 characters long.")
-    String registration;
+    private String registration;
+    @Schema(description = "phone of user", example = "81 99999-9999")
+    @Size(max = 13, message = "The phone must be between 1 and 23 characters long.")
+    private String phone;
     @Schema(description = "password fo user, nullable = false", example = "password")
-    String password;
-    @Pattern(regexp = "ADMIN|STUDENT|PROFESSOR|SECRETARY|TECHNICIAN", message = "Invalid role")
-    String role;
+    private String password;
+    @Pattern(regexp = "ADMIN|STUDENT|PROFESSOR|SECRETARY|TECHNICIAN|OTHER", message = "Invalid role")
+    private String role;
 }
