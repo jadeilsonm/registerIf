@@ -26,6 +26,8 @@ public class User {
     @Column(unique = true, length = 150)
     private String email;
     private String password;
+    @Column(length = 15)
+    private String phone;
     @Enumerated(EnumType.STRING)
     private Role role;
     private Boolean isActive;

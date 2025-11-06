@@ -47,12 +47,20 @@ public class UserService {
     public void userRegister(final CreateUserDTO user) {
         final User newUser = userMapper.toEntity(user);
 
-        Role role = Role.valueOf(user.getRole());
-        newUser.setRole(role);
+        Role role;
+        if (user.getRole() != null) {
+             role = Role.valueOf(user.getRole());
+            newUser.setRole(role);
+        }
+        else {
+            role = Role.STUDENT;
+            newUser.setRole(Role.STUDENT);
+        }
 
         newUser.setPassword(passwordEncoder.encode(
                 this.generatePassword(role, user.getPassword())
         ));
+
 
         this.processingUser(newUser, RabbitMQConfig.EXCHANGE_CREATED);
     }

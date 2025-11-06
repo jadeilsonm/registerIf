@@ -29,6 +29,7 @@ public class CreateUserDTO {
     private String registration;
     @Schema(description = "phone of user", example = "(81)99999-9999")
     @Size(max = 15, message = "The phone must be between 1 and 15 characters long.")
+    @Pattern(regexp = "\\(\\d{2}\\)\\d{4,5}-\\d{4}", message = "Phone number must be in the format (XX)XXXXX-XXXX")
     private String phone;
     @Schema(description = "password fo user, nullable = false", example = "password")
     private String password;
