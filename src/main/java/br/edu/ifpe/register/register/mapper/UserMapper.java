@@ -20,7 +20,6 @@ public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true)
-    @Mapping(target = "role", ignore = true)
     @Mapping(target = "isActive", ignore = true)
     void updateEntity(CreateUserDTO createUserDTO, @org.mapstruct.MappingTarget User user);
 
