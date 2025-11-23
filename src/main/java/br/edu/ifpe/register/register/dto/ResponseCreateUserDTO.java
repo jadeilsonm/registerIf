@@ -3,6 +3,7 @@ package br.edu.ifpe.register.register.dto;
 import java.util.UUID;
 
 
+import br.edu.ifpe.register.register.entity.Role;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ import lombok.Setter;
 public class ResponseCreateUserDTO {
     private UUID id;
     private String name;
-    String email;
-    String registration;
+    private String email;
+    private Role role;
+    private String registration;
 }

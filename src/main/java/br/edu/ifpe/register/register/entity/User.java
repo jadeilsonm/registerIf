@@ -17,11 +17,13 @@ import java.util.UUID;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    public UUID id;
+    private UUID id;
     @Column(unique = true, length = 20)
-    public String registration;
+    private String registration;
     @Column(length = 150)
-    public String name;
+    private String name;
     @Column(unique = true, length = 150)
-    public String email;
+    private String email;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }
